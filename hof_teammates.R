@@ -99,6 +99,8 @@ totals=read_csv("Data/Player Totals.csv") %>% filter(tm!="TOT")
 
 hof_and_mates_summary=final_hof_w_hof_mates %>% group_by(name) %>% 
   summarize(num_hof_teammates=n(),g_w_hof_teammates=sum(g.x)) %>% ungroup() %>%
+  right_join(hall_of_fame_players %>% select(name)) %>%
+  replace_na(list(num_hof_teammates=0,g_w_hof_teammates=0)) %>%
   left_join(.,pci %>% distinct(player,.keep_all = TRUE),by=c("name"="player")) %>% 
   mutate(avg_hof_mates_season=num_hof_teammates/num_seasons) %>%
   select(-c(birth_year,first_seas)) %>%
